@@ -1,0 +1,28 @@
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+public class GetSearchResults {
+
+// This class is used to retrieve the search results.
+	
+	List<String> searchResultTitleNames;
+	
+	public List<String> getSearchResults(WebDriver driver) {
+		
+		WebElement fromElement = driver.findElement(By.xpath("//*[@id='search']/div[1]/div[2]/div/span[3]"));
+		
+		List<WebElement> webElements = fromElement.findElements(By.xpath(".//h2/a/span"));
+		searchResultTitleNames = new ArrayList<String>();
+		for (WebElement e: webElements) {
+			System.out.println(e.getText());
+			searchResultTitleNames.add(e.getText());
+		}
+		return searchResultTitleNames;
+	}
+
+}

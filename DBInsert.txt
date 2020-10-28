@@ -1,0 +1,46 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.util.List;
+
+public class DBInsert {
+	
+	public void databaseSave(List<String>searchResultTitleNames) {
+			
+	// This class is used to insert the retrieved search results in DB.
+
+		try {
+			// create DB connection
+			String myDriver ="com.mysql.jdbc.Driver";
+			String myUrl = "jdbc:mysql://localhost:3306/test";
+			Class.forName(myDriver);
+			Connection conn = DriverManager.getConnection(myUrl, "root", "Password");
+			
+			// insert statement
+			
+			String query = "insert into SearchResultsTable (search_result)" + "values(?)";
+			
+			//create insert prepared statement
+			
+			PreparedStatement preparedStmt = conn.prepareStatement(query);
+			
+				for (String s : searchResultTitleNames) {
+					
+					preparedStmt.setString(1, s);
+					preparedStmt.addBatch();
+				
+				}
+				
+				//execute the preparedstatement
+				preparedStmt.executeBatch();
+				
+				conn.close();
+						
+		} catch (Exception e ) {
+			System.err.println("Got an exception");
+			System.err.println(e.getMessage());
+		}
+	}
+	
+
+}

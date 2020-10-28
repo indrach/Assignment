@@ -1,0 +1,49 @@
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.PageFactory;
+
+public class AmazonSearchTest {
+
+	//This class is the test class which calls other classes for different test actions like search a certain item in a category, retrieve the results 		// And store the search resulsts in a DB.
+	
+	WebDriver driver;
+	JavascriptExecutor jse;
+	List<String> searchResultTitleNames;
+	
+	public void invokeBrowser() {
+		
+		System.setProperty("webdriver.chrome.driver","./drivers/chromedriver.exe");
+		driver = new ChromeDriver();
+		
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
+		
+		searchDemo();
+		GetSearchResults d = new GetSearchResults();
+		searchResultTitleNames = d.getSearchResults(driver);
+		
+		DBInsert dbInsert = new DBInsert();
+		dbInsert.databaseSave(searchResultTitleNames);
+		
+	}
+		
+public void searchDemo() {
+			
+			driver.get("https://www.amazon.com");
+			// Create a new instance of the search page class
+	        // and initialise any WebElement fields in it.
+			EnterAmazonSearch search = PageFactory.initElements(driver, EnterAmazonSearch.class);
+			// Pass search category and search string.
+	          search.searchFor("Electronics", "Nikon Z6");
+		      	}
+
+public static void main (String[] args) {
+	AmazonSearchTest demo = new AmazonSearchTest();
+	demo.invokeBrowser();
+	}
+}
